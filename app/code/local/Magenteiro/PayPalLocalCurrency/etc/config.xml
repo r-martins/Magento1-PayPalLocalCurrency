@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Magenteiro_PayPalLocalCurrency>
+            <version>1.0.0</version>
+        </Magenteiro_PayPalLocalCurrency>
+    </modules>
+    <global>
+        <models>
+            <magenteiro_paypallocalcurrency>
+                <class>Magenteiro_PayPalLocalCurrency_Model</class>
+                <resourceModel>magenteiro_paypallocalcurrency_resource</resourceModel>
+            </magenteiro_paypallocalcurrency>
+            <magenteiro_paypallocalcurrency_resource>
+                <class>Magenteiro_PayPalLocalCurrency_Model_Resource</class>
+            </magenteiro_paypallocalcurrency_resource>
+            <paypal>
+                <rewrite>
+                    <express_checkout>Magenteiro_PayPalLocalCurrency_Model_Paypal_Express_Checkout</express_checkout>
+                    <cart>Magenteiro_PayPalLocalCurrency_Model_Paypal_Cart</cart>
+                </rewrite>
+            </paypal>
+        </models>
+    </global>
+</config>
