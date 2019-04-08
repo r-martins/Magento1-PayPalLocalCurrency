@@ -16,8 +16,10 @@
             </magenteiro_paypallocalcurrency_resource>
             <paypal>
                 <rewrite>
+                    <standard>Magenteiro_PayPalLocalCurrency_Model_Paypal_Standard</standard>
                     <express_checkout>Magenteiro_PayPalLocalCurrency_Model_Paypal_Express_Checkout</express_checkout>
                     <cart>Magenteiro_PayPalLocalCurrency_Model_Paypal_Cart</cart>
+                    <express>Magenteiro_PayPalLocalCurrency_Model_Paypal_Express</express>
                 </rewrite>
             </paypal>
         </models>

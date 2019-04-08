@@ -21,13 +21,14 @@ class Magenteiro_PayPalLocalCurrency_Model_Paypal_Cart extends Mage_Paypal_Model
 
         #customization starts
         $config = Mage::getModel('paypal/config');
-        $isCurrencySupported = $config->isCurrencyCodeSupported($this->_salesEntity->getQuoteCurrencyCode());
+
         #customization ends
 
 
         // regular totals
         $shippingDescription = '';
         if ($this->_salesEntity instanceof Mage_Sales_Model_Order) {
+            $isCurrencySupported = $config->isCurrencyCodeSupported($this->_salesEntity->getOrderCurrencyCode());
             $shippingDescription = $this->_salesEntity->getShippingDescription();
             $this->_totals = array(
                 self::TOTAL_SUBTOTAL => ($isCurrencySupported) ? $this->_salesEntity->getSubtotal() :  $this->_salesEntity->getBaseSubtotal(),
@@ -37,6 +38,7 @@ class Magenteiro_PayPalLocalCurrency_Model_Paypal_Cart extends Mage_Paypal_Model
             );
             $this->_applyHiddenTaxWorkaround($this->_salesEntity);
         } else {
+            $isCurrencySupported = $config->isCurrencyCodeSupported($this->_salesEntity->getQuoteCurrencyCode());
             $address = $this->_salesEntity->getIsVirtual() ?
                 $this->_salesEntity->getBillingAddress() : $this->_salesEntity->getShippingAddress();
             $shippingDescription = $address->getShippingDescription();
@@ -92,18 +94,19 @@ class Magenteiro_PayPalLocalCurrency_Model_Paypal_Cart extends Mage_Paypal_Model
     {
         #customization starts
         $config = Mage::getModel('paypal/config');
-        $isCurrencySupported = $config->isCurrencyCodeSupported($this->_salesEntity->getQuoteCurrencyCode());
         #customization ends
 
         if ($this->_salesEntity instanceof Mage_Sales_Model_Order) {
+            $isCurrencySupported = $config->isCurrencyCodeSupported($this->_salesEntity->getOrderCurrencyCode());
             $qty = (int) $salesItem->getQtyOrdered();
-            $amount = ($isCurrencySupported) ? (float) $salesItem->getPrice() : (float) $salesItem->getBasePrice();
+            $amount = ($isCurrencySupported) ? (float) $salesItem->getOriginalPrice() : (float) $salesItem->getBasePrice();
             // TODO: nominal item for order
         } else {
+            $isCurrencySupported = $config->isCurrencyCodeSupported($this->_salesEntity->getQuoteCurrencyCode());
             $qty = (int) $salesItem->getTotalQty();
             $amount = $salesItem->isNominal() ? 0 : (float) $salesItem->getBaseCalculationPrice();
             if($isCurrencySupported){
-                $amount = $salesItem->isNominal() ? 0 : (float) $salesItem->getBaseCalculationPriceOriginal();
+                $amount = $salesItem->isNominal() ? 0 : (float) $salesItem->getOriginalPrice();
             }
         }
         // workaround in case if item subtotal precision is not compatible with PayPal (.2)
@@ -142,7 +145,11 @@ class Magenteiro_PayPalLocalCurrency_Model_Paypal_Cart extends Mage_Paypal_Model
 
         #customization starts
         $config = Mage::getModel('paypal/config');
-        $isCurrencySupported = $config->isCurrencyCodeSupported($this->_salesEntity->getQuoteCurrencyCode());
+        if($this->_salesEntity instanceof Mage_Sales_Model_Quote){
+            $isCurrencySupported = $config->isCurrencyCodeSupported($this->_salesEntity->getQuoteCurrencyCode());
+        }else{
+            $isCurrencySupported = $config->isCurrencyCodeSupported($this->_salesEntity->getOrderCurrencyCode());
+        }
         #customization ends
 
         $referenceAmount = ($isCurrencySupported) ? $this->_salesEntity->getGrandTotal() : $this->_salesEntity->getBaseGrandTotal();
